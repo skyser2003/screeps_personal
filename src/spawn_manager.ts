@@ -123,8 +123,12 @@ export class SpawnManager {
         return sum;
     }
 
+    get defaultParts() {
+        return [CARRY, MOVE, WORK] as BodyPartConstant[];
+    }
+
     calculateParts(currentEnergy: number, partsOrder: BodyPartConstant[]) {
-        const parts = [WORK, MOVE, CARRY] as BodyPartConstant[];
+        const parts = this.defaultParts;
 
         let leftEnergy = currentEnergy - this.requiredEnergy(parts);
 
