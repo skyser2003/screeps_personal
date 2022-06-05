@@ -1,9 +1,21 @@
 import { RoleBuilder, RoleHarvester, RoleUpgrader } from "./roles";
 
 export class CreepManager {
-    constructor(private id_: string, private obj_: Room) {}
+    private obj_: Room;
+
+    constructor(private id_: string) {
+        this.obj_ = undefined as any;
+
+        this.refresh();
+    }
+
+    refresh() {
+        this.obj_ = Game.rooms[this.id_];
+    }
 
     run() {
+        this.refresh();
+
         const creeps = this.obj_.find(FIND_MY_CREEPS);
 
         for (const creep of creeps) {

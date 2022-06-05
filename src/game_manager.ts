@@ -19,7 +19,7 @@ export class GameManager {
             const spawn = Game.spawns[id];
 
             if (this.spawnManagers.get(id) === undefined) {
-                const manager = new SpawnManager(id, spawn);
+                const manager = new SpawnManager(id);
                 this.spawnManagers.set(id, manager);
             }
         }
@@ -30,12 +30,12 @@ export class GameManager {
             const room = Game.rooms[id];
 
             if (this.creepManagers.get(id) === undefined) {
-                const cm = new CreepManager(id, room);
+                const cm = new CreepManager(id);
                 this.creepManagers.set(id, cm);
             }
 
             if (this.towerManagers.get(id) === undefined) {
-                const tm = new TowerManager(id, room);
+                const tm = new TowerManager(id);
                 this.towerManagers.set(id, tm);
             }
         }

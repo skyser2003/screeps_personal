@@ -1,5 +1,5 @@
 export class TowerManager {
-    constructor(private id_: string, private obj_: Room) {}
+    constructor(private id_: string) {}
 
     run() {
         const tower = Game.getObjectById(

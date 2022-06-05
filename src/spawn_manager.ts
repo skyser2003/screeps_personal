@@ -7,7 +7,11 @@ export class SpawnManager {
     upgraders: Creep[] = [];
     builders: Creep[] = [];
 
-    constructor(private id_: string, private obj_: StructureSpawn) {
+    private obj_: StructureSpawn;
+
+    constructor(private id_: string) {
+        this.obj_ = undefined as any;
+
         this.refresh();
     }
 
@@ -20,6 +24,8 @@ export class SpawnManager {
     }
 
     refresh() {
+        this.obj_ = Game.spawns[this.id_];
+
         for (const name in Memory.creeps) {
             if (!Game.creeps[name]) {
                 delete Memory.creeps[name];
