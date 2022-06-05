@@ -54,63 +54,90 @@ export class SpawnManager {
         console.log(`Builders: ${numBuilders}`);
         console.log(`Upgraders: ${numUpgraders}`);
 
-        const totalEnergy = this.obj_.room.energyCapacityAvailable;
+        const maxEnergy = this.obj_.room.energyCapacityAvailable;
+        const currentEnergy = this.obj_.room.energyAvailable;
 
-        console.log(`Total energy available: ${totalEnergy}`);
+        console.log(
+            `Room ${this.id} max energy: ${maxEnergy}, current energy: ${currentEnergy}`
+        );
 
         // Harvester : Builder : Upgrader = 2:1:2
         // Base num harvesters: 4
 
-        if (numHarvesters < 4) {
-            this.spawnHarvester(totalEnergy);
-        }
+        if (numHarvesters === 0) {
+            this.spawnHarvester(currentEnergy);
+        } else {
+            if (numHarvesters < 4) {
+                this.spawnHarvester(currentEnergy);
+            }
 
-        if (numBuilders < numHarvesters / 2) {
-            this.spawnBuilder(totalEnergy);
-        }
+            if (numBuilders < numHarvesters / 2) {
+                this.spawnBuilder(currentEnergy);
+            }
 
-        if (numUpgraders < numHarvesters) {
-            this.spawnUpgrader(totalEnergy);
+            if (numUpgraders < numHarvesters) {
+                this.spawnUpgrader(currentEnergy);
+            }
         }
     }
 
     spawnHarvester(totalEnergy: number) {
         const newName = "Harvester" + Game.time;
-
-        console.log(`Spawning new harvester: ${newName}`);
-
         const parts = this.calculateParts(totalEnergy, [CARRY, WORK, MOVE]);
 
-        this.obj_.spawnCreep(parts, newName, {
+        const result = this.obj_.spawnCreep(parts, newName, {
             memory: {
                 role: "harvester",
                 roleFunc: RoleHarvester.run,
             },
         });
+
+        if (result === OK) {
+            console.log(`Spawning new harvester: ${newName}`);
+
+            console.log(
+                `Harvester parts: [${parts}], total energy: ${this.requiredEnergy(
+                    parts
+                )}`
+            );
+        }
     }
 
     spawnBuilder(totalEnergy: number) {
         const newName = "Builder" + Game.time;
-
-        console.log(`Spawning new builder: ${newName}`);
-
         const parts = this.calculateParts(totalEnergy, [CARRY, MOVE, WORK]);
 
-        this.obj_.spawnCreep(parts, newName, {
+        const result = this.obj_.spawnCreep(parts, newName, {
             memory: { role: "builder", roleFunc: RoleBuilder.run },
         });
+
+        if (result === OK) {
+            console.log(`Spawning new builder: ${newName}`);
+            console.log(
+                `Builder parts: [${parts}], total energy: ${this.requiredEnergy(
+                    parts
+                )}`
+            );
+        }
     }
 
     spawnUpgrader(totalEnergy: number) {
         const newName = "Upgrader" + Game.time;
-
-        console.log(`Spawning new upgrader: ${newName}`);
-
         const parts = this.calculateParts(totalEnergy, [CARRY, MOVE, WORK]);
 
-        this.obj_.spawnCreep(parts, newName, {
+        const result = this.obj_.spawnCreep(parts, newName, {
             memory: { role: "upgrader", roleFunc: RoleUpgrader.run },
         });
+
+        if (result === OK) {
+            console.log(`Spawning new upgrader: ${newName}`);
+
+            console.log(
+                `Upgrader parts: [${parts}], total energy: ${this.requiredEnergy(
+                    parts
+                )}`
+            );
+        }
     }
 
     requiredEnergy(parts: BodyPartConstant[]) {
@@ -133,15 +160,21 @@ export class SpawnManager {
         let leftEnergy = currentEnergy - this.requiredEnergy(parts);
 
         while (0 < leftEnergy) {
+            let partAdded = false;
+
             for (const addPart of partsOrder) {
                 const partEnergy = this.requiredEnergy([addPart]);
-                leftEnergy -= partEnergy;
 
-                if (0 <= leftEnergy) {
+                if (0 <= leftEnergy - partEnergy) {
+                    leftEnergy -= partEnergy;
                     parts.push(addPart);
-                } else {
-                    break;
+
+                    partAdded = true;
                 }
+            }
+
+            if (partAdded === false) {
+                break;
             }
         }
 
