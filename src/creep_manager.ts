@@ -19,16 +19,16 @@ export class CreepManager {
         const creeps = this.obj_.find(FIND_MY_CREEPS);
 
         for (const creep of creeps) {
+            if (creep.memory.role === "harvester") {
+                creep.memory.roleFunc = RoleHarvester.run;
+            } else if (creep.memory.role === "upgrader") {
+                creep.memory.roleFunc = RoleUpgrader.run;
+            } else if (creep.memory.role === "builder") {
+                creep.memory.roleFunc = RoleBuilder.run;
+            }
+
             if (creep.memory.roleFunc !== undefined) {
                 creep.memory.roleFunc(creep);
-            } else {
-                if (creep.memory.role === "harvester") {
-                    RoleHarvester.run(creep);
-                } else if (creep.memory.role === "upgrader") {
-                    RoleUpgrader.run(creep);
-                } else if (creep.memory.role === "builder") {
-                    RoleBuilder.run(creep);
-                }
             }
         }
     }
