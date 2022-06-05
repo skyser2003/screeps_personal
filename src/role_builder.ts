@@ -15,7 +15,10 @@ export class RoleBuilder {
             creep.memory.building = false;
             creep.say("🔄 harvest");
         }
-        if (!creep.memory.building && creep.store.getFreeCapacity() === 0) {
+        if (
+            creep.memory.building == false &&
+            creep.store.getFreeCapacity() === 0
+        ) {
             creep.memory.building = true;
             creep.memory.energySourceId = undefined;
             creep.say("🚧 build");
