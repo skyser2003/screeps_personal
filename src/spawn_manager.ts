@@ -73,7 +73,7 @@ export class SpawnManager {
         if (numHarvesters === 0) {
             this.spawnHarvester(currentEnergy);
         } else {
-            if (numHarvesters < 4) {
+            if (numHarvesters < 4 || maxEnergy == currentEnergy) {
                 this.spawnHarvester(maxEnergy);
             }
 
