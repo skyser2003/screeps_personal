@@ -74,15 +74,15 @@ export class SpawnManager {
             this.spawnHarvester(currentEnergy);
         } else {
             if (numHarvesters < 4) {
-                this.spawnHarvester(currentEnergy);
+                this.spawnHarvester(maxEnergy);
             }
 
             if (numBuilders < numHarvesters / 2) {
-                this.spawnBuilder(currentEnergy);
+                this.spawnBuilder(maxEnergy);
             }
 
             if (numUpgraders < numHarvesters) {
-                this.spawnUpgrader(currentEnergy);
+                this.spawnUpgrader(maxEnergy);
             }
         }
     }
