@@ -184,6 +184,6 @@ export class SpawnManager {
             }
         }
 
-        return parts;
+        return parts.sort();
     }
 }
