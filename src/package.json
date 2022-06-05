@@ -1,0 +1,25 @@
+{
+    "name": "screeps_personal",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "npm run eslint && tsc && npm run grunt",
+        "eslint": "npx eslint .",
+        "grunt": "grunt screeps"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "grunt-screeps": "^1.5.0"
+    },
+    "devDependencies": {
+        "@types/lodash": "^4.14.182",
+        "@types/screeps": "^3.3.0",
+        "@typescript-eslint/eslint-plugin": "^5.27.0",
+        "@typescript-eslint/parser": "^5.27.0",
+        "eslint": "^8.17.0",
+        "prettier": "^2.6.2"
+    }
+}

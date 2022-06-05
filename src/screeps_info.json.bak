@@ -1,0 +1,5 @@
+// Copy this file as screeps_info.json and fill in your information
+{
+	"email": "your_screeps@email.com",
+	"token": "your_screeps_oauth_token"
+}
