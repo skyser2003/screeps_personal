@@ -1,34 +1,85 @@
+import * as _ from "lodash";
 import { RoleUpgrader } from "./role_upgrader";
+
+declare global {
+    interface CreepMemory {
+        energySourceId?: string;
+        energyTargetId?: string;
+    }
+}
 
 export class RoleHarvester {
     static run(creep: Creep) {
-        if (creep.store.getFreeCapacity() > 0) {
-            const sources = creep.room.find(FIND_SOURCES);
-            if (creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0], {
+        const hasCapacity = creep.store.getFreeCapacity() > 0;
+
+        let energySourceId = creep.memory.energySourceId;
+
+        if (energySourceId === undefined) {
+            if (hasCapacity) {
+                const sources = creep.room.find(FIND_SOURCES);
+
+                const sampled = _.sample(sources);
+                if (sampled !== undefined) {
+                    energySourceId = creep.memory.energySourceId = sampled.id;
+                }
+            }
+        }
+
+        if (hasCapacity && energySourceId !== undefined) {
+            const energySource = Game.getObjectById(
+                energySourceId as Id<Source>
+            )!;
+
+            if (creep.harvest(energySource) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(energySource, {
                     visualizePathStyle: { stroke: "#ffaa00" },
                 });
             }
         } else {
-            const targets = creep.room.find(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return (
-                        (structure.structureType === STRUCTURE_EXTENSION ||
-                            structure.structureType === STRUCTURE_SPAWN ||
-                            structure.structureType === STRUCTURE_TOWER) &&
-                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-                    );
-                },
-            });
+            creep.memory.energySourceId = undefined;
 
-            if (targets.length > 0) {
+            let energyTargetId = creep.memory.energyTargetId;
+
+            if (energyTargetId === undefined) {
+                const targets: (
+                    | StructureExtension
+                    | StructureSpawn
+                    | StructureTower
+                )[] = creep.room.find(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return (
+                            (structure.structureType === STRUCTURE_EXTENSION ||
+                                structure.structureType === STRUCTURE_SPAWN ||
+                                structure.structureType === STRUCTURE_TOWER) &&
+                            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+                        );
+                    },
+                });
+
+                const sampled = _.sample(targets);
+
+                if (sampled !== undefined) {
+                    energyTargetId = creep.memory.energyTargetId = sampled.id;
+                }
+            }
+
+            if (energyTargetId !== undefined) {
+                const energyTarget = Game.getObjectById(
+                    energyTargetId as Id<
+                        StructureExtension | StructureSpawn | StructureTower
+                    >
+                )!;
                 if (
-                    creep.transfer(targets[0], RESOURCE_ENERGY) ==
+                    creep.transfer(energyTarget, RESOURCE_ENERGY) ==
                     ERR_NOT_IN_RANGE
                 ) {
-                    creep.moveTo(targets[0], {
+                    creep.moveTo(energyTarget, {
                         visualizePathStyle: { stroke: "#ffffff" },
                     });
+                }
+
+                if (energyTarget.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
+                    creep.memory.energyTargetId = undefined;
                 }
             } else {
                 return RoleUpgrader.run(creep);

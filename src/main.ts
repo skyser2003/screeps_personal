@@ -5,8 +5,6 @@ declare global {
     interface CreepMemory {
         role: string;
         roleFunc: (creep: Creep) => void;
-        building?: boolean;
-        upgrading?: boolean;
     }
 }
 

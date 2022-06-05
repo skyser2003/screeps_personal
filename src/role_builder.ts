@@ -1,5 +1,12 @@
 import { RoleHarvester } from "./role_harvester";
 
+declare global {
+    interface CreepMemory {
+        building?: boolean;
+        upgrading?: boolean;
+    }
+}
+
 export class RoleBuilder {
     static run(creep: Creep) {
         if (creep.memory.building && creep.store[RESOURCE_ENERGY] === 0) {
