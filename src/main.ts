@@ -11,7 +11,17 @@ declare global {
 }
 
 const gameManager = new GameManager();
+let numLoop = 0;
 
 export const loop = () => {
+    console.log(`------------------Loop ${numLoop} begin------------------`);
+    console.log("---------------------------------------------------------");
+
     gameManager.run();
+
+    console.log("---------------------------------------------------------");
+    console.log(`-------------------Loop ${numLoop} end-------------------`);
+    console.log("\n");
+
+    ++numLoop;
 };
