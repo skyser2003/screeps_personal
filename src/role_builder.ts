@@ -1,3 +1,5 @@
+import * as _ from "lodash";
+
 import { RoleHarvester } from "./role_harvester";
 
 declare global {
@@ -15,6 +17,7 @@ export class RoleBuilder {
         }
         if (!creep.memory.building && creep.store.getFreeCapacity() === 0) {
             creep.memory.building = true;
+            creep.memory.energySourceId = undefined;
             creep.say("🚧 build");
         }
 
@@ -55,11 +58,26 @@ export class RoleBuilder {
                 }
             }
         } else {
-            const sources = creep.room.find(FIND_SOURCES);
-            if (creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0], {
-                    visualizePathStyle: { stroke: "#ffaa00" },
-                });
+            let energySourceId = creep.memory.energySourceId;
+
+            if (energySourceId === undefined) {
+                const energySource = creep.pos.findClosestByPath(FIND_SOURCES);
+
+                if (energySource !== null) {
+                    energySourceId = energySource.id;
+                }
+            }
+
+            if (energySourceId !== undefined) {
+                const energySource = Game.getObjectById(
+                    energySourceId as Id<Source>
+                )!;
+
+                if (creep.harvest(energySource) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(energySource, {
+                        visualizePathStyle: { stroke: "#ffaa00" },
+                    });
+                }
             }
         }
     }
