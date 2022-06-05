@@ -24,13 +24,9 @@ export class CreepManager {
             } else {
                 if (creep.memory.role === "harvester") {
                     RoleHarvester.run(creep);
-                }
-
-                if (creep.memory.role === "upgrader") {
+                } else if (creep.memory.role === "upgrader") {
                     RoleUpgrader.run(creep);
-                }
-
-                if (creep.memory.role === "builder") {
+                } else if (creep.memory.role === "builder") {
                     RoleBuilder.run(creep);
                 }
             }
